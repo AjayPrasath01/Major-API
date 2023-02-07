@@ -4,101 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c7c29411-07fb-4055-97ca-e3ee37fa9d09" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jpa-buddy.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ArduinoSD.ino" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/HELP.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/ArduinoCodeGenerator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Configs/CorsConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Configs/PasswordEncoderConfiguration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Configs/SecurityConfiguration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Configs/WebSocketConfiguration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/Advicers.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/AuxillaryController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/DataReceiver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/DataSender.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/CustomExceptions/UnauthorizedException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/CustomExceptions/UserNotFoundException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Filters/AuthFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Handlers/WebSocketHandlers.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/MachinemonitorApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Other/CustomUserDetails.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Requests/AddDeviceRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Requests/ChangePasswordBody.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Requests/RemoveMachineRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Requests/WSRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Tables/Data.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Tables/Machines.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Tables/NewUsers.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Tables/Organizations.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Tables/Users.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Services/CustomUserDetailService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Services/DataDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Services/MachinesDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Services/NewUsersDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Services/OrganizationDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Services/UsersDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/StartupRunner.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/temp.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/srm/machinemonitor/MachinemonitorApplicationTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/ArduinoCodeGenerator.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Configs/CorsConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Configs/PasswordEncoderConfiguration.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Configs/SecurityConfiguration.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Configs/WebSocketConfiguration.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Controllers/Advicers.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Controllers/AuxillaryController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Controllers/DataReceiver.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Controllers/DataSender.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/CustomExceptions/UnauthorizedException.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/CustomExceptions/UserNotFoundException.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Filters/AuthFilter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Handlers/WebSocketHandlers.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/MachinemonitorApplication.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Models/Other/CustomUserDetails.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Models/Requests/AddDeviceRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Models/Requests/ChangePasswordBody.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Models/Requests/RemoveMachineRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Models/Requests/WSRequest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Models/Tables/Data.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Models/Tables/Machines.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Models/Tables/NewUsers.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Models/Tables/Organizations.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Models/Tables/Users.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Services/CustomUserDetailService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Services/DataDAO.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Services/MachinesDAO.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Services/NewUsersDAO.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Services/OrganizationDAO.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Services/UsersDAO.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/StartupRunner.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/templates/temp.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/machinemonitor-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/machinemonitor.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/surefire-reports/TEST-com.srm.machinemonitor.MachinemonitorApplicationTests.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/surefire-reports/com.srm.machinemonitor.MachinemonitorApplicationTests.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/test-classes/com/srm/machinemonitor/MachinemonitorApplicationTests.class" afterDir="false" />
-    </list>
+    <list default="true" id="c7c29411-07fb-4055-97ca-e3ee37fa9d09" name="Changes" comment="Small changes v1" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -202,6 +108,14 @@
       <option name="presentableId" value="Default" />
       <updated>1666783017109</updated>
     </task>
+    <task id="LOCAL-00001" summary="Small changes v1">
+      <created>1675746487790</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1675746487790</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -214,5 +128,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Small changes" />
+    <MESSAGE value="Small changes v1" />
+    <option name="LAST_COMMIT_MESSAGE" value="Small changes v1" />
   </component>
 </project>
