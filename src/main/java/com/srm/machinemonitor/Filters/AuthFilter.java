@@ -25,13 +25,15 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        String username, password;
+        String username, password, organization;
         try{
             Map<String, String> requestParams = new ObjectMapper().readValue(request.getInputStream(), Map.class);
             username = requestParams.get("username");
             password = requestParams.get("password");
-            System.out.println("Username Login in" + username);
-            System.out.println("Password Login in" + password);
+            organization = requestParams.get("organization");
+            System.out.println("User login request -> UserName :" + username + " Organzation : " + organization);
+            //Combining organization and username as loadUserByDetails have only username
+            username = organization + ":" + username;
         }catch (IOException e){
             throw new AuthenticationServiceException(e.getMessage(), e);
         }

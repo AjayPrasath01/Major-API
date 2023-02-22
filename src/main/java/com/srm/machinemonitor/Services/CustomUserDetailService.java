@@ -14,8 +14,9 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        Users users = usersDAO.findByUserName(username);
-        System.out.println(users);
+        String[] temp = username.split(":");
+        Users users = usersDAO.findByUsernameAndOrganizationName(temp[1], temp[0]);
+        System.out.println("loadUserByUsername arg " + username);
         if (users == null){
             throw new UsernameNotFoundException("User not found");
         }

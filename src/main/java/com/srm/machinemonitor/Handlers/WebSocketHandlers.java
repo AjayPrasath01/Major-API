@@ -74,8 +74,8 @@ public class WebSocketHandlers extends TextWebSocketHandler {
 
         LocalDateTime dateTime = LocalDateTime.parse("1999-01-01 00:00:00", formatter);
         data.put("lastData", dateTime);
-        clients.add(data);
-        sessions.add(session);
+//        clients.add(data);
+//        sessions.add(session);
         System.out.println(clients);
         System.out.println(sessions);
     }

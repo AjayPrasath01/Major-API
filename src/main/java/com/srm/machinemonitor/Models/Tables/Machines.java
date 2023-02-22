@@ -23,9 +23,17 @@ public class Machines {
 
     @Column
     @NonNull
-    int secert;
+    String secert;
 
     @Column
     @NonNull
-    String sensorType;
+    String sensors;
+
+    @Column(name="organizationId")
+    int organizationId;
+
+    @OneToMany(targetEntity = Data.class, cascade = CascadeType.ALL)
+    @JoinColumn(name="machineId", referencedColumnName = "id")
+    List<Data> data;
+
 }

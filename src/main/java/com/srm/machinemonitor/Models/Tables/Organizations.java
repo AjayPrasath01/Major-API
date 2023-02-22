@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @RequiredArgsConstructor
+@ToString
 @Getter
 @Setter
 @Data
@@ -19,20 +20,22 @@ public class Organizations {
     @GeneratedValue(strategy=GenerationType.AUTO)
     int id;
 
-    @Column
+    @Column(unique=true)
     @NonNull
     String name;
 
     @Column(columnDefinition = "boolean default true")
     Boolean isActive;
 
-//    @OneToMany(targetEntity = Users.class, cascade = CascadeType.ALL)
-//    @JoinColumn(name="ordanization_id", referencedColumnName = "id")
-//    private List<Users> users;
+    @ToString.Exclude
+    @OneToMany(targetEntity = Users.class, cascade = CascadeType.ALL)
+    @JoinColumn(name="organizationId", referencedColumnName = "id")
+    private List<Users> users = new java.util.ArrayList<>();
 
-    @OneToMany(targetEntity = Machines.class, cascade = CascadeType.ALL)
-    @JoinColumn(name="ordanization_id", referencedColumnName = "id")
-    private List<Machines> machines;
+    @ToString.Exclude
+    @OneToMany(targetEntity= Machines.class, cascade = CascadeType.ALL)
+    @JoinColumn(name="organizationId", referencedColumnName = "id")
+    private List<Machines> machines = new java.util.ArrayList<>();
 
     public Organizations(int id, String name, boolean isActive){
         this.id = id;

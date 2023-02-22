@@ -2,6 +2,8 @@ package com.srm.machinemonitor.Models.Requests;
 
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -9,14 +11,20 @@ import lombok.*;
 @Data
 public class AddDeviceRequest {
 
+    @NotNull(message="machineName can't be blank")
     String machineName;
+
+    @NotNull(message="machineName can't be blank")
+    String connectionType; // Wifi, Eth, func
 
     String ssid;
 
     String password;
 
-    String sensorType;
+    @NotNull(message="sensorType can't be blank")
+    String sensors;
 
-    int organization_id;
+    @NotNull(message="organization_id can't be blank")
+    String organization;
 
 }

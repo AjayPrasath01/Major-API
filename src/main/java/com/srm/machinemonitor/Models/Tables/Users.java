@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Entity
@@ -20,12 +21,19 @@ public class Users {
     int id;
 
     @NonNull
-    @Column(unique = true)
+    @Column
+    @NotEmpty(message="username can't be empty")
     String username;
 
     @NonNull
     @Column
+    @NotEmpty(message="password can't be empty")
     String password;
+
+    @NonNull
+    @Column
+    @NotEmpty(message="email can't be empty")
+    String email;
 
     @NonNull
     @Column
@@ -34,8 +42,8 @@ public class Users {
     @Column(columnDefinition="boolean default true")
     Boolean isActive;
 
-    @Column
-    int ordanization_id;
+    @Column(name="organizationId")
+    int organizationId;
 
     @ManyToOne(targetEntity = Organizations.class, cascade = CascadeType.ALL)
     List<Users> users;
@@ -46,6 +54,6 @@ public class Users {
         this.password = password;
         this.role = role;
         this.isActive = isActive;
-        this.ordanization_id = ordanization_id;
+        this.organizationId = ordanization_id;
     }
 }

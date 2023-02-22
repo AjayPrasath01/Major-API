@@ -53,7 +53,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterAt(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests()
-                .antMatchers("/", "/data/", "/login", "/addUsers")
+                .antMatchers("/", "/data/", "/login", "/addUsers", "/api/register/new/user")
                 .permitAll()
                 .antMatchers("/fetch/**",
                         "/login/changePassword",
@@ -73,7 +73,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 )
                 .authenticated()
-//                .permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .and()
                 .httpBasic();

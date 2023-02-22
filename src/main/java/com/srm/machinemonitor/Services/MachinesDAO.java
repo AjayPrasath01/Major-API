@@ -15,8 +15,12 @@ public interface MachinesDAO extends JpaRepository<Machines, Integer> {
 //    @Query(value="SELECT DISTINCT machines.machine_name FROM machines", nativeQuery = true)
 //    Machines getAllMachineNames();
 
-    @Query(value="SELECT * FROM machines WHERE machines.machine_name IN (SELECT DISTINCT machines.machine_name FROM machines)", nativeQuery = true)
-    List<Machines> getAllMachineNames();
+//    @Query(value="SELECT DISTINCT machines.machineName FROM machines where organizationId = ?1", nativeQuery = true)
+    List<Machines> findAllByOrganizationId(int organizationId);
+
+    Machines getIdByMachineNameAndSensorsAndOrganizationId(String machineName, String sensor, int orgnaizatonId);
+
+    Machines findByMachineNameAndSensorsAndOrganizationId(String machineName, String sensor, int organizationId);
 
     @Query(value="SELECT machines.sensor_type FROM machines WHERE machines.machine_name = ?1", nativeQuery = true)
     String getChartType(String machinenmame);

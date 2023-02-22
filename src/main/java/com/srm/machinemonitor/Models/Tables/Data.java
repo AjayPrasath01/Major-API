@@ -25,10 +25,6 @@ public class Data {
 
     @NonNull
     @Column
-    public String machine_name;
-
-    @NonNull
-    @Column
     public LocalDateTime date;
 
     @NonNull
@@ -37,10 +33,10 @@ public class Data {
 
     @NonNull
     @Column
-    public String sensor_name;
+    public String value;
 
     @NonNull
     @Column
-    public String value;
+    int machineId;
 
 }
