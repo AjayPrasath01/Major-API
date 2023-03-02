@@ -10,13 +10,14 @@ import java.util.List;
 @Transactional
 public interface MachinesDAO extends JpaRepository<Machines, Integer> {
 
-    boolean existsBymachineName(String machineName);
+    boolean existsBymachineNameAndOrganizationId(String machineName, int organizationId);
 
 //    @Query(value="SELECT DISTINCT machines.machine_name FROM machines", nativeQuery = true)
 //    Machines getAllMachineNames();
 
-//    @Query(value="SELECT DISTINCT machines.machineName FROM machines where organizationId = ?1", nativeQuery = true)
-    List<Machines> findAllByOrganizationId(int organizationId);
+    Boolean existsByOrganizationIdAndMachineNameAndSecert(int organizationId, String machineName, String secert);
+
+    List<Machines> findAllByOrganizationIdOrderByMachineNameAsc(int organizationId);
 
     Machines getIdByMachineNameAndSensorsAndOrganizationId(String machineName, String sensor, int orgnaizatonId);
 
@@ -25,10 +26,7 @@ public interface MachinesDAO extends JpaRepository<Machines, Integer> {
     @Query(value="SELECT machines.sensor_type FROM machines WHERE machines.machine_name = ?1", nativeQuery = true)
     String getChartType(String machinenmame);
 
-//    @Query(value="SELECT DISTINCT machines.machine_name, machines.machine_name")
-//    List<Machines> getAllMachineDetails();
 
-    @Modifying
-    @Query(value="DELETE FROM machines WHERE machines.machine_name = ?1", nativeQuery = true)
-    void deleteByMachineNames(String machineNames);
+    @Query(value="SELECT * FROM machines WHERE machines.machineName = ?1 AND machines.organizationId = ?2 ORDER BY machines.machineName ASC", nativeQuery = true)
+    List<Machines> findByMachineNamesAndOrganizationId(String machineNames, int organizationId);
 }

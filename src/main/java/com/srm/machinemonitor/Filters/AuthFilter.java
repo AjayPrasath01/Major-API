@@ -15,6 +15,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
 
 public class AuthFilter extends AbstractAuthenticationProcessingFilter {
@@ -43,7 +45,15 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        super.unsuccessfulAuthentication(request, response, failed);
+        response.setStatus(401);
+        response.setContentType("application/json");
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("message", failed.getMessage());
+        PrintWriter out = response.getWriter();
+        out.write(new ObjectMapper().writeValueAsString(responseData));
+        out.flush();
+        out.close();
+//        super.unsuccessfulAuthentication(request, response, failed);
     }
 
     @Override

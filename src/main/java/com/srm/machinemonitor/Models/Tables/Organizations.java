@@ -37,6 +37,11 @@ public class Organizations {
     @JoinColumn(name="organizationId", referencedColumnName = "id")
     private List<Machines> machines = new java.util.ArrayList<>();
 
+    @ToString.Exclude
+    @OneToMany(targetEntity= Log.class, cascade = CascadeType.ALL)
+    @JoinColumn(name="organizationId", referencedColumnName = "id")
+    private List<Log> logs = new java.util.ArrayList<>();
+
     public Organizations(int id, String name, boolean isActive){
         this.id = id;
         this.name = name;

@@ -1,8 +1,6 @@
 package com.srm.machinemonitor.Handlers;
 
 import com.srm.machinemonitor.Models.Tables.Data;
-import com.srm.machinemonitor.Services.DataDAO;
-import com.srm.machinemonitor.Services.MachinesDAO;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +10,8 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+import com.srm.machinemonitor.Services.DataDAO;
+import com.srm.machinemonitor.Services.MachinesDAO;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

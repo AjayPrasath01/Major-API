@@ -30,6 +30,9 @@ public class StartupRunner implements CommandLineRunner {
     @Value("${defaultSuperAdminPassword}")
     String DefaultSuperAdminPassword;
 
+    @Value("${defaultAdminEmail}")
+    String DefaultAdminEmail;
+
     @Autowired
     private UsersDAO usersDAO;
 
@@ -52,7 +55,8 @@ public class StartupRunner implements CommandLineRunner {
             organizationDAO.save(organizations);
         }
         if (users == null){
-            users = new Users(1, DefaultUsername, passwordEncoder.encode(DefaultUserPassword), "admin", true, 1);
+            users = new Users(1, DefaultUsername, passwordEncoder.encode(DefaultUserPassword),"admin", true, 1);
+            users.setEmail(DefaultAdminEmail);
             usersDAO.save(users);
         }
         if (superAdmin == null){

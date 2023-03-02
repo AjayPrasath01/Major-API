@@ -15,6 +15,9 @@ public interface DataDAO extends JpaRepository<Data, Integer> {
     @Query(value="SELECT DISTINCT data.machine_name FROM data", nativeQuery = true)
     List<String> getAllMachineNames();
 
+    @Query(value="SELECT COUNT(*) FROM data WHERE data.machineId = ?1 AND data.data_type <> ?2", nativeQuery = true)
+    Integer countByMachineIDAndDatatype(int machineId, String dataType);
+
     @Query(value="SELECT * FROM data WHERE data.date >= ?2 AND data.date <= ?3 AND data.machine_name = ?1", nativeQuery = true)
     List<Data> getDataBetweenTime(String deviceName, LocalDateTime startDate, LocalDateTime endDate);
 
@@ -33,8 +36,7 @@ public interface DataDAO extends JpaRepository<Data, Integer> {
     List<Data> findAllByMachineId(int machineId);
 
     @Modifying
-    @Query(value="DELETE FROM data WHERE data.machine_name = ?1", nativeQuery = true)
-    void deleteAllByMachinenames(String machinename);
+    void deleteAllByMachineId(Integer machineId);
 
     @Query(value="SELECT DISTINCT data.sensor_name FROM data WHERE data.machine_name = ?1", nativeQuery = true)
     List<String> finAllSensorsByMachineName(String machinename);

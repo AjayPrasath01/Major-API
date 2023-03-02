@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Getter
 @Setter
-@Data
 public class ChangePasswordBody {
     @NotNull(message="Username can't be null")
     String username;

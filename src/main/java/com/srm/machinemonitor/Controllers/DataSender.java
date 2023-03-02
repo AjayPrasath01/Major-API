@@ -3,9 +3,7 @@ package com.srm.machinemonitor.Controllers;
 import com.srm.machinemonitor.Models.Other.CustomUserDetails;
 import com.srm.machinemonitor.Models.Tables.Data;
 import com.srm.machinemonitor.Models.Tables.Machines;
-import com.srm.machinemonitor.Services.DataDAO;
-import com.srm.machinemonitor.Services.MachinesDAO;
-import com.srm.machinemonitor.Services.OrganizationDAO;
+import com.srm.machinemonitor.Utils;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,6 +21,9 @@ import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
+import com.srm.machinemonitor.Services.DataDAO;
+import com.srm.machinemonitor.Services.OrganizationDAO;
+import com.srm.machinemonitor.Services.MachinesDAO;
 
 @RestController
 @RequestMapping("/api/fetch")
@@ -99,7 +100,7 @@ public class DataSender {
     }
 
     @GetMapping("/machineNames")
-    public ResponseEntity<List<String>> sendMachinesAvailable(Principal principal){
+    public ResponseEntity<List<String>> sendMachinesAvailable(Principal principal, HttpServletResponse response){
         final Map res = new HashMap();
         if (principal == null){
             res.put("message", "Unauthorized");
@@ -112,7 +113,7 @@ public class DataSender {
             return new ResponseEntity(res, HttpStatus.NOT_FOUND);
         }
         System.out.println(organization_id);
-        List<Machines> machinesRequired = machineDAO.findAllByOrganizationId(organization_id);
+        List<Machines> machinesRequired = machineDAO.findAllByOrganizationIdOrderByMachineNameAsc(organization_id);
         System.out.println(machinesRequired);
         // To combine sensorType together under single machine name
         for (Machines m : machinesRequired){
@@ -135,6 +136,11 @@ public class DataSender {
         return new ResponseEntity(new JSONArray(data).toString(), HttpStatus.OK);
     }
 
+//    @GetMapping("/data/points/available")
+//    public ResponseEntity sendDataPoint(@RequestParam("machinename") String machineName, @RequestParam("organization") String organizationm, @RequestParam("sensor") String sensor){
+//
+//    }
+
     @GetMapping("/csv")
     public void sendAsCSV(@RequestParam("machinename") String machinename, @RequestParam("organization") String organization,  @RequestParam("sensor") String sensor, HttpServletResponse response, Principal principal) throws IOException {
         response.setContentType("text/csv");
@@ -148,27 +154,25 @@ public class DataSender {
         Integer organization_id = organizationDAO.getIdByName(organization);
 
         if (organization_id == null){
-            final Map<String, String> res = new HashMap<>();
-            res.put("message", "IDOR not allowed");
-            response.setStatus(401);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "IDOR not allowed");
+            return;
         }
 
         if (principal == null){
-            final Map<String, String> res = new HashMap<>();
-            res.put("message", "IDOR not allowed");
-            response.setStatus(401);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication required");
+            return;
         }
 
-        if (((CustomUserDetails) ((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getOrganizationId() == organization_id){
-            final Map<String, String> res = new HashMap<>();
-            res.put("message", "IDOR not allowed");
-            response.setStatus(401);
+        if (!organization_id.equals(((CustomUserDetails) ((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getOrganizationId())){
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "IDOR not allowed");
+            return;
         }
 
 
         Machines machineId =  machineDAO.getIdByMachineNameAndSensorsAndOrganizationId(machinename, sensor, organization_id);
         if (machineId == null){
-            response.setStatus(404);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Machine not found");
+            return;
         }
         List<Data> data = dataDAO.findAllByMachineId(machineId.getId());
 

@@ -13,8 +13,11 @@ public interface UsersDAO extends JpaRepository<Users, Integer> {
     Users findByUsernameAndOrganizationName(String username, String OrganizationName);
 
     Boolean existsByUsernameAndOrganizationId(String username, int organization_id);
-    // To remove
-    Users findByUsername(String name);
+
+    Users findByUsernameAndOrganizationId(String name, int organization_id);
+
+    @Query(value="SELECT COUNT(*) FROM Users WHERE Users.organizationId = ?1 AND Users.role = ?2 AND Users.isActive = ?3", nativeQuery = true)
+    Integer countByOrganizationIdAndRoleAndIsActive(int organizationId, String role, boolean isActive);
 
     List<Users> findAllByOrganizationId(int organization_is);
 

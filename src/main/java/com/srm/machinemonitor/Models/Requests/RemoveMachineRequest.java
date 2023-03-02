@@ -12,4 +12,6 @@ import lombok.Setter;
 public class RemoveMachineRequest {
 
     String machineName;
+
+    String organization;
 }

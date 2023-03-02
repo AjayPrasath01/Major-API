@@ -4,27 +4,27 @@ import com.srm.machinemonitor.CustomExceptions.UnauthorizedException;
 import com.srm.machinemonitor.CustomExceptions.UserNotFoundException;
 import com.srm.machinemonitor.Models.Other.CustomUserDetails;
 import com.srm.machinemonitor.Models.Requests.*;
+import com.srm.machinemonitor.Models.Tables.Log;
 import com.srm.machinemonitor.Models.Tables.Machines;
-import com.srm.machinemonitor.Models.Tables.NewUsers;
 import com.srm.machinemonitor.Models.Tables.Organizations;
 import com.srm.machinemonitor.Models.Tables.Users;
 import com.srm.machinemonitor.Services.*;
+import com.srm.machinemonitor.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.LocalDateTime;
 import  java.util.UUID;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.*;
@@ -38,6 +38,9 @@ public class AuxillaryController {
 
     Map<String, String> res;
     Random random = new Random();
+
+    @Autowired
+    LogDAO logDAO;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -84,7 +87,7 @@ public class AuxillaryController {
     }
 
     @PatchMapping("/login/changePassword")
-    public ResponseEntity<Map<String, String>> changePassword(Principal principal, @RequestBody @Valid ChangePasswordBody changePasswordBody) throws UnauthorizedException {
+    public ResponseEntity<Map<String, String>> changePassword(HttpServletResponse response, Principal principal, @RequestBody @Valid ChangePasswordBody changePasswordBody) throws UnauthorizedException, IOException {
         /*
         To Change Password
         PATCH
@@ -97,23 +100,12 @@ public class AuxillaryController {
         }
          */
         res = new HashMap<>();
-        Integer organization_id = organizationDAO.getIdByName(changePasswordBody.getOrganization());
-        if (principal == null){
-            res.put("message", "Unauthorized");
-            return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
+        Map data = Utils.verifyOrgnaization(response, principal, changePasswordBody.getOrganization(), organizationDAO);
+        if (data == null){
+            return null;
         }
-        if (organization_id == null){
-            res.put("message", "Organization not found");
-            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
-        }
-        if (!organization_id.equals(((CustomUserDetails) ((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getOrganizationId())){
-            res.put("message", "Unauthorized");
-            return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
-        }
-        if (!Objects.equals(changePasswordBody.getUsername(), principal.getName())){
-            throw new UnauthorizedException("Illegal Access");
-        }
-        Users users = usersDAO.findByUsername(principal.getName());
+        int organization_id = (int) data.get("organizationId");
+        Users users = usersDAO.findByUsernameAndOrganizationId(principal.getName(), organization_id);
         if (!principal.getName().equals(users.getUsername())){
             res.put("message", "Unauthorized");
             return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
@@ -134,9 +126,10 @@ public class AuxillaryController {
 
     //Adding and unblocking user within organization
     @PostMapping("/unblockUsers")
-    public ResponseEntity<Map<String, String>> addUsers(@RequestBody @Valid NewUserRequest newUser, Principal principal){
+    public ResponseEntity<Map<String, String>> addUsers(@RequestBody @Valid UnBlockUserRequest unBlockUserRequest, Principal principal){
         res = new HashMap<>();
-        Integer organization_id = organizationDAO.getIdByName(newUser.getOrganization());
+
+        Integer organization_id = organizationDAO.getIdByName(unBlockUserRequest.getOrganization());
         if (principal == null){
             res.put("message", "Unauthorized Cookies");
             return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
@@ -153,22 +146,42 @@ public class AuxillaryController {
             res.put("message", "Unauthorized");
             return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
         }
-        if (usersDAO.existsByUsernameAndOrganizationId(newUser.getUsername(), organization_id)) {
-            res.put("message", "Username Already Taken");
+        Users users = usersDAO.findByUsernameAndOrganizationName(unBlockUserRequest.getUsername(), unBlockUserRequest.getOrganization());
+        users.setIsActive(true);
+        usersDAO.save(users);
+        res.put("message", "User Unblocked");
+
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @PostMapping("/join/organization")
+    public ResponseEntity joinOrganization(@RequestBody @Valid RegiesterNewUserRequest regiesterNewUserRequest, @RequestParam(value = "role", required = true) String role){
+        Organizations organization = organizationDAO.findByName(regiesterNewUserRequest.getOrganization());
+        if (organization == null) {
+            final Map<String, String> res = new HashMap<>();
+            res.put("message", "Organization do not exists");
+            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
+        }
+        if (!Objects.equals(role, "admin") && !Objects.equals(role, "visitor")){
+            final Map<String, String> res = new HashMap<>();
+            res.put("message", "Invalid role");
+            return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
+        }
+        if (usersDAO.existsByUsernameAndOrganizationId(regiesterNewUserRequest.getUsername(), organization.getId())){
+            final Map<String, String> res = new HashMap<>();
+            res.put("message", "Username already taken");
             return new ResponseEntity<>(res, HttpStatus.CONFLICT);
         }
         Users users = new Users();
-        users.setUsername(newUser.getUsername());
-        users.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        users.setOrganizationId(organization.getId());
+        users.setUsername(regiesterNewUserRequest.getUsername());
+        users.setPassword(passwordEncoder.encode(regiesterNewUserRequest.getPassword()));
+        users.setEmail(regiesterNewUserRequest.getEmail());
         users.setIsActive(true);
-        users.setRole("admin");
-        users.setOrganizationId(organization_id);
-//        newUsersDAO.save(newUser);
-        System.out.print("New user : ");
-        System.out.println(users);
+        users.setRole(role);
         usersDAO.save(users);
-        res.put("message", "Request Received");
-
+        final Map<String, String> res = new HashMap<>();
+        res.put("message", "New user registered");
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
@@ -196,33 +209,28 @@ public class AuxillaryController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    @PostMapping("/allowUsers")
-//    public ResponseEntity<Map<String, String>> allowUser(@RequestBody @Valid AllowUserRequest allowUser, @RequestParam(value = "role", required = false, defaultValue="visitor") String role) throws UserNotFoundException {
-//        /*
-//        PUT
-//        Example :
-//        {
-//            "username": "ajay",
-//            "organization": "dev",
-//          }
-//         */
-//        res = new HashMap<>();
-//        Users user = usersDAO.findByUsernameAndOrganizationName(allowUser.getUsername(), allowUser.getOrganization());
-//        if (user == null){
-//            throw new UserNotFoundException("The selected user is missing missing");
-//        }
-//        if (user.getIsActive()){
-//            res.put("message", "Permission Already Granded");
-//            return new ResponseEntity<>(res, HttpStatus.OK);
-//        }
-//        user.setIsActive(true);
-//        usersDAO.save(user);
-//        res.put("message", "Permission Granded");
-//        return new ResponseEntity<>(res, HttpStatus.OK);
-//    }
+    @GetMapping("/count/data/points")
+    public ResponseEntity countDataPoints(@RequestParam("machinename") String machineName, @RequestParam("organization") String organizationName, @RequestParam("sensor") String sensor, HttpServletResponse response, Principal principal) throws IOException {
+        Map data = Utils.verifyOrgnaization(response, principal, organizationName, organizationDAO);
+        if (data == null){
+            return null;
+        }
 
-    @DeleteMapping("/deleteUser")
-    public ResponseEntity<Map<String, String>> removeNewUser(@RequestBody @Valid AllowUserRequest userRequest, Principal principal) throws UserNotFoundException{
+        Integer organizationId = (Integer) data.get("organizationId");
+
+        Machines machine = machinesDAO.getIdByMachineNameAndSensorsAndOrganizationId(machineName, sensor, organizationId);
+        if (machine == null){
+            final Map res = new HashMap();
+            res.put("message", "Machine with the selected sensor not found");
+            return new ResponseEntity(res, HttpStatus.NOT_FOUND);
+        }
+        Integer dataPoints = dataDAO.countByMachineIDAndDatatype(machine.getId(), "status");
+
+        return new ResponseEntity(dataPoints, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/block/user")
+    public ResponseEntity<Map<String, String>> removeNewUser(@RequestBody @Valid AllowUserRequest userRequest, Principal principal, HttpServletResponse response) throws UserNotFoundException, IOException {
         /*
         DELETE
         Example :
@@ -232,22 +240,27 @@ public class AuxillaryController {
           }
          */
         res = new HashMap<>();
-        if (principal == null){
-            res.put("message", "Missing authentication");
-            return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
+        Map verified = Utils.verifyAdminAndOrganizationIDOR(response, principal, userRequest.getOrganization(), organizationDAO);
+        if (verified == null){
+            return null;
         }
-        if(!((CustomUserDetails) ((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getRole().equals("admin")){
-            res.put("message", "Unauthorized only admin allowed");
-            return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
-        }
-        Integer organization_id = organizationDAO.getIdByName(userRequest.getOrganization());
-        if (organization_id != null && organization_id != ((CustomUserDetails) ((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getOrganizationId()){
-            res.put("message", "unauthorized");
-            return new ResponseEntity(res, HttpStatus.UNAUTHORIZED);
-        }
+        Integer organization_id = (Integer) verified.get("organizationId");
         Users user = usersDAO.findByUsernameAndOrganizationName(userRequest.getUsername(), userRequest.getOrganization());
-        usersDAO.delete(user);
-        res.put("message", "Removed the user");
+        if (user.getRole().equals("admin")){
+            Integer activeAdmins  = usersDAO.countByOrganizationIdAndRoleAndIsActive(organization_id, "admin", true);
+            if (activeAdmins > 1){
+                user.setIsActive(false);
+                usersDAO.save(user);
+                res.put("message", "User has been blocked");
+                return new ResponseEntity<>(res, HttpStatus.OK);
+            }else{
+                res.put("message", "User can't been blocked as there are only " + activeAdmins + " left");
+                return new ResponseEntity<>(res, HttpStatus.NOT_ACCEPTABLE);
+            }
+        }
+        user.setIsActive(false);
+        usersDAO.save(user);
+        res.put("message", "User has been blocked");
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
@@ -270,60 +283,56 @@ public class AuxillaryController {
         return new ResponseEntity<>(usersDAO.findAllByOrganizationId(organization_id), HttpStatus.OK);
     }
 
-//    @GetMapping("/getCurrentUsers")
-//    public ResponseEntity<List<Users>> getCurrentUsers(){
-//        return new ResponseEntity<>(usersDAO.findAll(), HttpStatus.OK);
-//    }
+    @GetMapping("/log/data")
+    public ResponseEntity loggingIOT(@RequestParam(value = "machineName", required = true)String machineName, @RequestParam(value = "organization", required = true) String organization, @RequestParam(value = "token", required = true) String token, @RequestParam(value = "log", required = true) String logData, @RequestParam(value = "logType", required = false, defaultValue="INFO") String logType, HttpServletResponse response) throws IOException {
+        res = new HashMap();
+        Map data =  Utils.verifyIotToken(response,  organization, machineName, token, machinesDAO, organizationDAO);
+        final Map verify = new HashMap();
+        if (verify == null){
+            return null;
+        }
+        int organizationId = (int) data.get("organizationId");
+        Log logTable = new Log();
+        logType = Utils.verifyLogType(logType);
+        logTable.setMachineName(machineName);
+        logTable.setOrganizationId(organizationId);
+        LocalDateTime time = LocalDateTime.now();
+        String log = time.toString() + " [" + logType + "] " + logData;
+        logTable.setLog(log);
+        logTable.setTime(LocalDateTime.now());
+        if (logData.isBlank()){
+            res.put("message", "Given data is blank");
+            return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
+        }
+        logDAO.save(logTable);
+        res.put("message", "Given data id added");
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 
-//    @DeleteMapping("/deleteCurrentUser")
-//    public ResponseEntity<Map<String, String>> removeCurrentUser(@RequestBody Users nUser) throws UserNotFoundException{
-//        /*
-//        DELETE
-//        Example :
-//        {
-//            "username": "ajay",
-//            "password": "a6c9450f835ff05ce70acd259c74420bf3c3734e76d5fec12aeb6021cdc452e6874029f8419d487e",
-//            "details": "Student",
-//            "id": "1" // important
-//          }
-//         */
-//
-//        res = new HashMap<>();
-//        Users user = usersDAO.findByUsername(nUser.getUsername());
-//
-//        if (user == null){
-//            throw new UserNotFoundException("The select user when missing");
-//        }
-//        usersDAO.delete(user);
-//        res.put("message", "Removed successfully");
-//        return new ResponseEntity<>(res, HttpStatus.OK);
-//    }
+    @GetMapping("/log/get/data")
+    public ResponseEntity sendLogIOT(@RequestParam(value = "machineName", required = true)String machineName, @RequestParam(value = "organization", required = true) String organization, Principal principal, HttpServletResponse response) throws IOException {
+        Map data = Utils.verifyOrgnaization(response, principal, organization, organizationDAO);
+        if (data == null){
+            return null;
+        }
+        int organizationId = (int) data.get("organizationId");
+        return new ResponseEntity(logDAO.findAllLogByMachineNameAndOrganizationId(machineName, organizationId), HttpStatus.OK);
+    }
+
 
     //If a device is added
     @PostMapping("/addDevice")
-    public ResponseEntity<Resource> addDevice(@RequestBody AddDeviceRequest addDeviceRequest, Principal principal) throws IOException {
+    public ResponseEntity<Resource> addDevice(@RequestBody AddDeviceRequest addDeviceRequest, Principal principal, HttpServletResponse response) throws IOException {
         /*
         During add device it checks for exsisting name and return error if the name alrady exists
          */
         res = new HashMap<>();
-        if (principal == null){
-            res.put("message", "Missing authentication");
-            return new ResponseEntity(res, HttpStatus.UNAUTHORIZED);
+        Map data = Utils.verifyOrgnaization(response, principal, addDeviceRequest.getOrganization(), organizationDAO);
+        if (data == null){
+            return null;
         }
-        Integer organization_id = organizationDAO.getIdByName(addDeviceRequest.getOrganization());
-        if (organization_id != null && !organization_id.equals(((CustomUserDetails) ((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getOrganizationId())){
-            res.put("message", "Unauthorized");
-            return new ResponseEntity(res, HttpStatus.UNAUTHORIZED);
-        }
-        if (organization_id == null){
-            res.put("message", "Organization do not exists");
-            return new ResponseEntity(res, HttpStatus.UNAUTHORIZED);
-        }
-        if(!((CustomUserDetails) ((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getRole().equals("admin")){
-            res.put("message", "Unauthorized only admin allowed");
-            return new ResponseEntity(res, HttpStatus.UNAUTHORIZED);
-        }
-        if (machinesDAO.existsBymachineName(addDeviceRequest.getMachineName())){
+        int organization_id = (int) data.get("organizationId");
+        if (machinesDAO.existsBymachineNameAndOrganizationId(addDeviceRequest.getMachineName(), organization_id)){
             res.put("message", "Machine Name already Taken");
             return new ResponseEntity(res, HttpStatus.CONFLICT);
         }
@@ -384,9 +393,14 @@ public class AuxillaryController {
     }
     
     @GetMapping("/checkNewMachineName")
-    public ResponseEntity<Map<String, String>> checkDeviceName(@RequestParam(value="machineName") String machinename){
+    public ResponseEntity<Map<String, String>> checkDeviceName(@RequestParam(value="machineName") String machinename, @RequestParam(value="organization") String organization, Principal principal, HttpServletResponse response) throws IOException {
         res = new HashMap<>();
-        if (machinesDAO.existsBymachineName(machinename)){
+        Map data = Utils.verifyOrgnaization(response, principal, organization, organizationDAO);
+        if (data == null){
+            return null;
+        }
+        int organization_id = (int) data.get("organizationId");
+        if (machinesDAO.existsBymachineNameAndOrganizationId(machinename, organization_id)){
             res.put("message", "Device Name is already taken");
             return new ResponseEntity<>(res, HttpStatus.NOT_ACCEPTABLE);
         }
@@ -394,11 +408,64 @@ public class AuxillaryController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @DeleteMapping("/removeMachine")
-    public ResponseEntity<Map<String, String>> removeMachine(@RequestBody RemoveMachineRequest removeMachineRequest){
+    @PutMapping("/update/sensors")
+    public ResponseEntity editSensor(@RequestBody @Valid ModifyDeviceRequest modifyDeviceRequest, Principal principal, HttpServletResponse response) throws IOException {
         res = new HashMap<>();
-        dataDAO.deleteAllByMachinenames(removeMachineRequest.getMachineName());
-        machinesDAO.deleteByMachineNames(removeMachineRequest.getMachineName());
+        Map data = Utils.verifyAdminAndOrganizationIDOR(response, principal, modifyDeviceRequest.getOrganization(), organizationDAO);
+        if (data == null){
+            return null;
+        }
+        modifyDeviceRequest.setSensors(modifyDeviceRequest.getSensors().toLowerCase());
+        Integer organizationId = (Integer) data.get("organizationId");
+        List<Machines> allSensor = machinesDAO.findByMachineNamesAndOrganizationId(modifyDeviceRequest.getMachineName(), organizationId);
+        if (allSensor == null || allSensor.size() == 0){
+            res.put("message", "Given machine name can be found");
+            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
+        }
+        String[] sensors = modifyDeviceRequest.getSensors().split(",");
+        if (Utils.hasDuplicates(sensors)){
+            res.put("message", "Duplicate sensors names are not allowed");
+            return new ResponseEntity<>(res, HttpStatus.CONFLICT);
+        }
+        Machines stored = null;
+        for (int i=0; i<allSensor.size(); i++){
+            stored = allSensor.get(i);
+            machinesDAO.deleteById(stored.getId());
+        }
+        if (sensors.length == 0 ){
+            res.put("message", "Updated susccessfully");
+            stored.setSensors("");
+            machinesDAO.save(stored);
+            return new ResponseEntity<>(res, HttpStatus.OK);
+        }
+        for (int i=0; i<sensors.length; i++){
+            if (Objects.equals(sensors[i], "")){
+                continue;
+            }
+            stored.setSensors(sensors[i]);
+            machinesDAO.save(stored);
+        }
+        res.put("message", "Updated susccessfully");
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/remove/machine")
+    public ResponseEntity<Map<String, String>> removeMachine(@RequestBody RemoveMachineRequest removeMachineRequest, HttpServletResponse response, Principal principal) throws IOException {
+        res = new HashMap<>();
+        Map data = Utils.verifyAdminAndOrganizationIDOR(response, principal, removeMachineRequest.getOrganization(), organizationDAO);
+        if (data == null){
+            return null;
+        }
+        Integer organizationId = (Integer) data.get("organizationId");
+        List<Machines> allMachines = machinesDAO.findByMachineNamesAndOrganizationId(removeMachineRequest.getMachineName(), organizationId);
+        if (allMachines == null || allMachines.size() == 0){
+            res.put("message", "Machine not found");
+            return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
+        }
+        for (Machines m: allMachines){
+            dataDAO.deleteAllByMachineId(m.getId());
+        }
+        machinesDAO.deleteAll(allMachines);
         res.put("message", "Removed the device successfully");
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
