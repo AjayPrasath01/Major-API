@@ -6,27 +6,21 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.transaction.Transactional;
+import java.math.BigInteger;
 import java.util.List;
-@Transactional
-public interface MachinesDAO extends JpaRepository<Machines, Integer> {
+public interface MachinesDAO extends JpaRepository<Machines, BigInteger> {
 
-    boolean existsBymachineNameAndOrganizationId(String machineName, int organizationId);
+    boolean existsBymachineNameAndOrganizationId(String machineName, BigInteger organizationId);
 
-//    @Query(value="SELECT DISTINCT machines.machine_name FROM machines", nativeQuery = true)
-//    Machines getAllMachineNames();
+    Boolean existsByOrganizationIdAndMachineNameAndSecert(BigInteger organizationId, String machineName, String secert);
 
-    Boolean existsByOrganizationIdAndMachineNameAndSecert(int organizationId, String machineName, String secert);
+    List<Machines> findAllByOrganizationIdOrderByMachineNameAsc(BigInteger organizationId);
 
-    List<Machines> findAllByOrganizationIdOrderByMachineNameAsc(int organizationId);
+    Machines getIdByMachineNameAndSensorsAndOrganizationId(String machineName, String sensor, BigInteger orgnaizatonId);
 
-    Machines getIdByMachineNameAndSensorsAndOrganizationId(String machineName, String sensor, int orgnaizatonId);
-
-    Machines findByMachineNameAndSensorsAndOrganizationId(String machineName, String sensor, int organizationId);
-
-    @Query(value="SELECT machines.sensor_type FROM machines WHERE machines.machine_name = ?1", nativeQuery = true)
-    String getChartType(String machinenmame);
+    Machines findByMachineNameAndSensorsAndOrganizationId(String machineName, String sensor, BigInteger organizationId);
 
 
     @Query(value="SELECT * FROM machines WHERE machines.machineName = ?1 AND machines.organizationId = ?2 ORDER BY machines.machineName ASC", nativeQuery = true)
-    List<Machines> findByMachineNamesAndOrganizationId(String machineNames, int organizationId);
+    List<Machines> findByMachineNamesAndOrganizationId(String machineNames, BigInteger organizationId);
 }

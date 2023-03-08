@@ -3,6 +3,7 @@ package com.srm.machinemonitor.Models.Tables;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.util.List;
 
 @Entity
@@ -15,22 +16,27 @@ public class Machines {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private BigInteger id;
 
     @Column
     @NonNull
-    String machineName;
+    private String machineName;
 
     @Column
     @NonNull
-    String secert;
+    private String secert;
 
     @Column
     @NonNull
-    String sensors;
+    private String sensors;
 
     @Column(name="organizationId")
-    int organizationId;
+    @NonNull
+    private BigInteger organizationId;
+
+    @Column
+    @NonNull
+    String mode = "dev";
 
     @OneToMany(targetEntity = Data.class, cascade = CascadeType.ALL)
     @JoinColumn(name="machineId", referencedColumnName = "id")

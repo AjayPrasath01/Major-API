@@ -6,19 +6,20 @@
   <component name="ChangeListManager">
     <list default="true" id="c7c29411-07fb-4055-97ca-e3ee37fa9d09" name="Changes" comment="Small changes v1">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ArduinoSD.ino" beforeDir="false" afterPath="$PROJECT_DIR$/ArduinoSD.ino" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Configs/WebSocketConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Configs/WebSocketConfiguration.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/AuxillaryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/AuxillaryController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/DataReceiver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/DataReceiver.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/DataSender.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/DataSender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/CustomExceptions/UserNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/CustomExceptions/UserNotFoundException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Filters/AuthFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Filters/AuthFilter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Handlers/WebSocketHandlers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Handlers/WebSocketHandlers.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Requests/ChangePasswordBody.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Requests/ChangePasswordBody.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Requests/RemoveMachineRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Requests/RemoveMachineRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Other/CustomUserDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Other/CustomUserDetails.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Tables/Data.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Tables/Data.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Tables/Machines.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Tables/Machines.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Tables/Organizations.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Tables/Organizations.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Services/CustomUserDetailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Services/CustomUserDetailService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Tables/Users.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Models/Tables/Users.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Services/DataDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Services/DataDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Services/MachinesDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Services/MachinesDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Services/OrganizationDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Services/OrganizationDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Services/UsersDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Services/UsersDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/StartupRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/StartupRunner.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
@@ -28,6 +29,7 @@
       <change beforePath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Controllers/DataReceiver.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Controllers/DataReceiver.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Controllers/DataSender.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Controllers/DataSender.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Filters/AuthFilter.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Filters/AuthFilter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Handlers/WebSocketHandlers.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Handlers/WebSocketHandlers.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Models/Other/CustomUserDetails.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Models/Other/CustomUserDetails.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Models/Requests/RemoveMachineRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Models/Requests/RemoveMachineRequest.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Models/Tables/Data.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/srm/machinemonitor/Models/Tables/Data.class" afterDir="false" />
@@ -49,8 +51,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -145,43 +147,68 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/AuxillaryController.java</url>
-          <line>144</line>
+          <line>146</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/AuxillaryController.java</url>
-          <line>340</line>
+          <line>343</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/AuxillaryController.java</url>
-          <line>346</line>
+          <line>349</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/DataSender.java</url>
-          <line>165</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/AuxillaryController.java</url>
-          <line>334</line>
+          <line>337</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/AuxillaryController.java</url>
-          <line>468</line>
+          <line>455</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/AuxillaryController.java</url>
-          <line>460</line>
+          <line>447</line>
           <option name="timeStamp" value="12" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/AuxillaryController.java</url>
-          <line>429</line>
-          <option name="timeStamp" value="13" />
+          <line>303</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/AuxillaryController.java</url>
+          <line>296</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Handlers/WebSocketHandlers.java</url>
+          <line>221</line>
+          <option name="timeStamp" value="31" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Handlers/WebSocketHandlers.java</url>
+          <line>219</line>
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Handlers/WebSocketHandlers.java</url>
+          <line>265</line>
+          <option name="timeStamp" value="40" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/DataSender.java</url>
+          <line>210</line>
+          <option name="timeStamp" value="43" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/srm/machinemonitor/Controllers/DataSender.java</url>
+          <line>203</line>
+          <option name="timeStamp" value="45" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

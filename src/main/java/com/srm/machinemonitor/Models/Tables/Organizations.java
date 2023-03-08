@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.util.List;
 
 @Entity
@@ -18,7 +19,7 @@ public class Organizations {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    int id;
+    BigInteger id;
 
     @Column(unique=true)
     @NonNull
@@ -42,7 +43,7 @@ public class Organizations {
     @JoinColumn(name="organizationId", referencedColumnName = "id")
     private List<Log> logs = new java.util.ArrayList<>();
 
-    public Organizations(int id, String name, boolean isActive){
+    public Organizations(BigInteger id, String name, boolean isActive){
         this.id = id;
         this.name = name;
         this.isActive = isActive;

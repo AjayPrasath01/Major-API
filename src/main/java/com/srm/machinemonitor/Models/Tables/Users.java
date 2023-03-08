@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.math.BigInteger;
 import java.util.List;
 
 @Entity
@@ -18,7 +19,8 @@ public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    int id;
+    @Column(columnDefinition = "NUMERIC(38,0)")
+    BigInteger id;
 
     @NonNull
     @Column
@@ -43,12 +45,12 @@ public class Users {
     Boolean isActive;
 
     @Column(name="organizationId")
-    int organizationId;
+    BigInteger organizationId;
 
     @ManyToOne(targetEntity = Organizations.class, cascade = CascadeType.ALL)
     List<Users> users;
 
-    public Users(int id, String username, String password, String role, boolean isActive, int ordanization_id){
+    public Users(BigInteger id, String username, String password, String role, boolean isActive, BigInteger ordanization_id){
         this.id = id;
         this.username = username;
         this.password = password;

@@ -11,8 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.web.header.Header;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotBlank;
+import java.math.BigInteger;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -34,12 +38,12 @@ public class DataReceiver {
     OrganizationDAO organizationDAO;
 
     @GetMapping("/data")
-    public ResponseEntity<HttpStatus> dataHandler(@RequestParam(value = "machineName", required = true)String machineName,
-                                                  @RequestParam(value = "dataType", required = true)String dataType,
-                                                  @RequestParam(value = "dataValue", required = true) String dataValue,
-                                                  @RequestParam(value = "sensorName", required = true) String sensorName,
-                                                  @RequestParam(value = "organization", required = true) String organization,
-                                                  @RequestParam(value = "token", required = true) String token, Principal principal){
+    public ResponseEntity<HttpStatus> dataHandler(@RequestParam(value = "machineName", required = true) @NotBlank String machineName,
+                                                  @RequestParam(value = "dataType", required = true) @NotBlank String dataType,
+                                                  @RequestParam(value = "dataValue", required = true) @NotBlank String dataValue,
+                                                  @RequestParam(value = "sensorName", required = true) @NotBlank String sensorName,
+                                                  @RequestParam(value = "organization", required = true) @NotBlank String organization,
+                                                  @RequestParam(value = "token", required = true) String token, HttpServletRequest request){
         /*
         chartType can be Bar, Line, No Chart
          */
@@ -47,11 +51,9 @@ public class DataReceiver {
         Map res = new HashMap();
         dataType = dataType.toLowerCase();
         sensorName = sensorName.toLowerCase();
-        Integer organizationId = organizationDAO.getIdByName(organization);
-        if (organizationId != null && !organizationId.equals(((CustomUserDetails) ((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getOrganizationId())){
-            res.put("message", "Unauthorized");
-            return new ResponseEntity(res, HttpStatus.UNAUTHORIZED);
-        }
+
+        BigInteger organizationId = organizationDAO.getIdByName(organization);
+
         if (organizationId == null){
             res.put("message", "Invalid organization");
             return new ResponseEntity(res, HttpStatus.BAD_REQUEST);

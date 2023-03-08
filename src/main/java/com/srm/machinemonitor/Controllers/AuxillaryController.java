@@ -19,8 +19,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigInteger;
+import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import  java.util.UUID;
 
@@ -37,16 +40,12 @@ import java.util.*;
 public class AuxillaryController {
 
     Map<String, String> res;
-    Random random = new Random();
 
     @Autowired
     LogDAO logDAO;
 
     @Autowired
     PasswordEncoder passwordEncoder;
-
-    @Autowired
-    NewUsersDAO newUsersDAO;
 
     @Autowired
     UsersDAO usersDAO;
@@ -77,7 +76,7 @@ public class AuxillaryController {
             res.put("message", null);
             return new ResponseEntity<>(res, HttpStatus.OK);
         }
-        int organization_id = ((CustomUserDetails) ((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getOrganizationId();
+        BigInteger organization_id = ((CustomUserDetails) ((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getOrganizationId();
 
         Organizations organization = organizationDAO.getNameById(organization_id);
         res.put("message", principal.getName());
@@ -104,7 +103,7 @@ public class AuxillaryController {
         if (data == null){
             return null;
         }
-        int organization_id = (int) data.get("organizationId");
+        BigInteger organization_id = (BigInteger) data.get("organizationId");
         Users users = usersDAO.findByUsernameAndOrganizationId(principal.getName(), organization_id);
         if (!principal.getName().equals(users.getUsername())){
             res.put("message", "Unauthorized");
@@ -129,7 +128,7 @@ public class AuxillaryController {
     public ResponseEntity<Map<String, String>> addUsers(@RequestBody @Valid UnBlockUserRequest unBlockUserRequest, Principal principal){
         res = new HashMap<>();
 
-        Integer organization_id = organizationDAO.getIdByName(unBlockUserRequest.getOrganization());
+        BigInteger organization_id = organizationDAO.getIdByName(unBlockUserRequest.getOrganization());
         if (principal == null){
             res.put("message", "Unauthorized Cookies");
             return new ResponseEntity<>(res, HttpStatus.UNAUTHORIZED);
@@ -186,6 +185,7 @@ public class AuxillaryController {
     }
 
     @PostMapping("/register/new/user")
+    @Transactional
     public ResponseEntity registerNewUser(@RequestBody @Valid RegiesterNewUserRequest regiesterNewUserRequest){
         if (organizationDAO.existsByName(regiesterNewUserRequest.getOrganization())){
             final Map<String, String> res = new HashMap<>();
@@ -216,7 +216,7 @@ public class AuxillaryController {
             return null;
         }
 
-        Integer organizationId = (Integer) data.get("organizationId");
+        BigInteger organizationId = (BigInteger) data.get("organizationId");
 
         Machines machine = machinesDAO.getIdByMachineNameAndSensorsAndOrganizationId(machineName, sensor, organizationId);
         if (machine == null){
@@ -244,7 +244,7 @@ public class AuxillaryController {
         if (verified == null){
             return null;
         }
-        Integer organization_id = (Integer) verified.get("organizationId");
+        BigInteger organization_id = (BigInteger) verified.get("organizationId");
         Users user = usersDAO.findByUsernameAndOrganizationName(userRequest.getUsername(), userRequest.getOrganization());
         if (user.getRole().equals("admin")){
             Integer activeAdmins  = usersDAO.countByOrganizationIdAndRoleAndIsActive(organization_id, "admin", true);
@@ -267,7 +267,7 @@ public class AuxillaryController {
     @GetMapping("/getUsers")
     public ResponseEntity<List<Users>> getNewUsers(@RequestParam(name="organization", required = true) String organization, Principal principal){
         res = new HashMap<>();
-        Integer organization_id = organizationDAO.getIdByName(organization);
+        BigInteger organization_id = organizationDAO.getIdByName(organization);
         if (principal == null){
             res.put("message", "unauthorization missing");
             return new ResponseEntity(res, HttpStatus.UNAUTHORIZED);
@@ -284,14 +284,15 @@ public class AuxillaryController {
     }
 
     @GetMapping("/log/data")
-    public ResponseEntity loggingIOT(@RequestParam(value = "machineName", required = true)String machineName, @RequestParam(value = "organization", required = true) String organization, @RequestParam(value = "token", required = true) String token, @RequestParam(value = "log", required = true) String logData, @RequestParam(value = "logType", required = false, defaultValue="INFO") String logType, HttpServletResponse response) throws IOException {
+    public ResponseEntity loggingIOT(@RequestParam(value = "machineName", required = true)String machineName, @RequestParam(value = "organization", required = true) String organization, @RequestParam(value = "token", required = true) String token, @RequestParam(value = "log", required = true) String logData, @RequestParam(value = "logType", defaultValue="INFO") String logType, HttpServletResponse response) throws IOException {
         res = new HashMap();
+        logData = URLDecoder.decode(logData, "UTF-8");
         Map data =  Utils.verifyIotToken(response,  organization, machineName, token, machinesDAO, organizationDAO);
         final Map verify = new HashMap();
-        if (verify == null){
+        if (data == null){
             return null;
         }
-        int organizationId = (int) data.get("organizationId");
+        BigInteger organizationId = (BigInteger) data.get("organizationId");
         Log logTable = new Log();
         logType = Utils.verifyLogType(logType);
         logTable.setMachineName(machineName);
@@ -315,13 +316,14 @@ public class AuxillaryController {
         if (data == null){
             return null;
         }
-        int organizationId = (int) data.get("organizationId");
+        BigInteger organizationId = (BigInteger) data.get("organizationId");
         return new ResponseEntity(logDAO.findAllLogByMachineNameAndOrganizationId(machineName, organizationId), HttpStatus.OK);
     }
 
 
     //If a device is added
     @PostMapping("/addDevice")
+    @Transactional
     public ResponseEntity<Resource> addDevice(@RequestBody AddDeviceRequest addDeviceRequest, Principal principal, HttpServletResponse response) throws IOException {
         /*
         During add device it checks for exsisting name and return error if the name alrady exists
@@ -331,7 +333,7 @@ public class AuxillaryController {
         if (data == null){
             return null;
         }
-        int organization_id = (int) data.get("organizationId");
+        BigInteger organization_id = (BigInteger) data.get("organizationId");
         if (machinesDAO.existsBymachineNameAndOrganizationId(addDeviceRequest.getMachineName(), organization_id)){
             res.put("message", "Machine Name already Taken");
             return new ResponseEntity(res, HttpStatus.CONFLICT);
@@ -347,49 +349,33 @@ public class AuxillaryController {
             machinesDAO.save(machines);
         }
 
-        File file = new File("ArduinoSD.ino");
+        String fileName = "ArduinoSD.ino";
+        InputStream inputStream = new FileInputStream(fileName);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, length);
+        }
+        String fileContent = outputStream.toString();
+        inputStream.close();
+        outputStream.close();
+        // Modify the file content as needed
+        fileContent  = fileContent.replace("<TOKEN>", secert);
+        fileContent  = fileContent.replace("<ORGANIZATIONNAME>", addDeviceRequest.getOrganization());
+        fileContent  = fileContent.replace("<MACHINENAME>", addDeviceRequest.getMachineName());
+        if (addDeviceRequest.getSsid() != null && addDeviceRequest.getPassword() != null){
+            fileContent  = fileContent.replace("<SSIDPASSWORD>", addDeviceRequest.getPassword());
+            fileContent  = fileContent.replace("<SSIDNAME>", addDeviceRequest.getSsid());
+        }
 
-//        String line = null;
-//        List<String> lines = new ArrayList<>();
-//
-//        FileReader reader = new FileReader(file);
-//
-//        BufferedReader bufferedReader = new BufferedReader(reader);
-//        while ((line = bufferedReader.readLine()) != null){
-//            if (line.contains("SSIDNAME")){
-//                line = line.replaceAll("SSIDNAME", "\"" + addDeviceRequest.getSsid() + "\"");
-//            }else if (line.contains("SSIDPASSWORD")){
-//                line = line.replaceAll("SSIDPASSWORD", "\"" + addDeviceRequest.getPassword() + "\"");
-//            }else if (line.contains("IMPORTANT")){
-//                line = line.replaceAll("IMPORTANT", "\"" + addDeviceRequest.getMachineName() + "\"");
-//            }
-//            lines.add(line);
-//        }
-//        bufferedReader.close();
-//        reader.close();
-//
-////        System.out.println(lines);
-//
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//
-//        DataOutputStream out = new DataOutputStream(baos);
-//
-//        for (String s: lines){
-//            baos.write(s.getBytes());
-//        }
-//        byte[] bytes = baos.toByteArray();
-//
-//        ByteArrayResource baseResource = new ByteArrayResource(bytes);
-//        System.out.println(baos);
-
-        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
-//        System.out.println(temp);
-
+        // Send the modified file content in the response
+        byte[] bytes = fileContent.getBytes();
+        InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(bytes));
         return ResponseEntity.ok()
-                .contentLength(file.length())
+                .contentLength(bytes.length)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
-//        return new ResponseEntity(baseResource, HttpStatus.OK);
     }
     
     @GetMapping("/checkNewMachineName")
@@ -399,7 +385,7 @@ public class AuxillaryController {
         if (data == null){
             return null;
         }
-        int organization_id = (int) data.get("organizationId");
+        BigInteger organization_id = (BigInteger) data.get("organizationId");
         if (machinesDAO.existsBymachineNameAndOrganizationId(machinename, organization_id)){
             res.put("message", "Device Name is already taken");
             return new ResponseEntity<>(res, HttpStatus.NOT_ACCEPTABLE);
@@ -409,6 +395,7 @@ public class AuxillaryController {
     }
 
     @PutMapping("/update/sensors")
+    @Transactional
     public ResponseEntity editSensor(@RequestBody @Valid ModifyDeviceRequest modifyDeviceRequest, Principal principal, HttpServletResponse response) throws IOException {
         res = new HashMap<>();
         Map data = Utils.verifyAdminAndOrganizationIDOR(response, principal, modifyDeviceRequest.getOrganization(), organizationDAO);
@@ -416,7 +403,7 @@ public class AuxillaryController {
             return null;
         }
         modifyDeviceRequest.setSensors(modifyDeviceRequest.getSensors().toLowerCase());
-        Integer organizationId = (Integer) data.get("organizationId");
+        BigInteger organizationId = (BigInteger) data.get("organizationId");
         List<Machines> allSensor = machinesDAO.findByMachineNamesAndOrganizationId(modifyDeviceRequest.getMachineName(), organizationId);
         if (allSensor == null || allSensor.size() == 0){
             res.put("message", "Given machine name can be found");
@@ -450,13 +437,14 @@ public class AuxillaryController {
     }
 
     @DeleteMapping("/remove/machine")
+    @Transactional
     public ResponseEntity<Map<String, String>> removeMachine(@RequestBody RemoveMachineRequest removeMachineRequest, HttpServletResponse response, Principal principal) throws IOException {
         res = new HashMap<>();
         Map data = Utils.verifyAdminAndOrganizationIDOR(response, principal, removeMachineRequest.getOrganization(), organizationDAO);
         if (data == null){
             return null;
         }
-        Integer organizationId = (Integer) data.get("organizationId");
+        BigInteger organizationId = (BigInteger) data.get("organizationId");
         List<Machines> allMachines = machinesDAO.findByMachineNamesAndOrganizationId(removeMachineRequest.getMachineName(), organizationId);
         if (allMachines == null || allMachines.size() == 0){
             res.put("message", "Machine not found");
@@ -483,11 +471,12 @@ public class AuxillaryController {
             return new ResponseEntity(res, HttpStatus.UNAUTHORIZED);
         }
         res.put("message", "logged in");
-        int organization_id = ((CustomUserDetails) ((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getOrganizationId();
+        BigInteger organization_id = ((CustomUserDetails) ((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getOrganizationId();
 
         Organizations organization = organizationDAO.getNameById(organization_id);
         res.put("username", principal.getName());
         res.put("organization", organization.getName());
+        res.put("role", ((CustomUserDetails)((UsernamePasswordAuthenticationToken) principal).getPrincipal()).getRole());
         return new ResponseEntity(res, HttpStatus.OK);
     }
 }

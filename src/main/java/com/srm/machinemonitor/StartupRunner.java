@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigInteger;
 
 @Component
 public class StartupRunner implements CommandLineRunner {
@@ -46,21 +49,22 @@ public class StartupRunner implements CommandLineRunner {
     SuperAdminsDAO superAdminsDAO;
 
     @Override
+    @Transactional
     public void run(String... args) throws Exception {
         Users users = usersDAO.findByUsernameAndOrganizationName(DefaultUsername, DefaultOrganization);
         SuperAdmins superAdmin = superAdminsDAO.findByUsername(DefaultSuperAdminName);
         Organizations organizations = organizationDAO.findByName(DefaultOrganization);
         if (organizations == null){
-            organizations = new Organizations(1, DefaultOrganization, true);
+            organizations = new Organizations(BigInteger.ONE, DefaultOrganization, true);
             organizationDAO.save(organizations);
         }
         if (users == null){
-            users = new Users(1, DefaultUsername, passwordEncoder.encode(DefaultUserPassword),"admin", true, 1);
+            users = new Users(BigInteger.ONE, DefaultUsername, passwordEncoder.encode(DefaultUserPassword),"admin", true, BigInteger.ONE);
             users.setEmail(DefaultAdminEmail);
             usersDAO.save(users);
         }
         if (superAdmin == null){
-            superAdmin = new SuperAdmins(1, DefaultSuperAdminName, passwordEncoder.encode(DefaultSuperAdminPassword));
+            superAdmin = new SuperAdmins(BigInteger.ONE, DefaultSuperAdminName, passwordEncoder.encode(DefaultSuperAdminPassword));
             superAdminsDAO.save(superAdmin);
         }
         System.out.println("Default user details : UserName : " + users.getUsername() + " Password : " + users.getPassword() + " Organization : " + organizations.getName());
